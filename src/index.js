@@ -33,7 +33,9 @@ function createToy() {
       },
       body: JSON.stringify({
         name: name,
-        image: image
+        image: image,
+        likes: 0,
+        random: "work???"
       })
     };
 
@@ -61,14 +63,29 @@ function appendToy(toy) {
   likeButton.className = "like-btn";
 
   likeButton.innerHTML = "&#128077";
+
   likeButton.addEventListener("click", () => {
     toy.likes += 1;
-    toyLikes.innerText = `${toy.likes} Likes`;
+    fetch(URL + `/${toy.id}`, {
+      method: 'PATCH',
+      headers:
+      {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        likes: toy.likes
+      })
+     })
+     .then(res => res.json())
+     .then(json => console.log(json))
+     toyLikes.innerText = `${toy.likes} Likes`;
   });
 
   toyCard.append(toyName, toyImage, toyLikes, likeButton);
   toyCollection.append(toyCard);
 }
+
 
 function fetchToys() {
   fetch(URL)
